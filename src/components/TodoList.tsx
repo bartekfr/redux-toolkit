@@ -8,7 +8,15 @@ const TodoList: React.FC = () => {
   const todos = useAppSelector(state => state.todos)
 
   React.useEffect(() => {
-    dispatch(fetchTodos())
+    const loadTodos = async () => {
+      const loadResult = await dispatch(fetchTodos())
+      if (fetchTodos.fulfilled.match(loadResult)) {
+        const list = loadResult.payload
+        console.log(`Loaded result ${list}`)
+      }
+    }
+
+    loadTodos()
   }, [dispatch])
 
   return (
