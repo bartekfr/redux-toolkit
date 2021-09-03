@@ -14,10 +14,8 @@ export interface ToDosState {
 
 export const fetchTodos = createAsyncThunk(
   'todos/list',
-  // Declare the type your function argument here:
   async () => {
     const response = await fetch(`https://jsonplaceholder.typicode.com/todos`)
-    // Inferred return type: Promise<MyData>
     console.log('response')
     return (await response.json()) as Todo[]
   }
