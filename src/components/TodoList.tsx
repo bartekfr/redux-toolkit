@@ -1,11 +1,24 @@
+import { createSelector } from 'reselect'
 import React from 'react'
 import cn from 'classnames'
 import { useAppSelector, useAppDispatch } from '../common/hooks'
 import todoSlice, { fetchTodos } from '../store/todos'
+import type { AppState } from '../store/store'
+
+
+const selectTodos = (state: AppState) => state.todos.list
+const selectPendingFilter = (state: AppState) => state.todos.filterPendingTodos
+
+const selectUncompletedTodos = createSelector(selectTodos, selectPendingFilter, (items, filter) =>
+  filter ? items.filter(item => item.completed === false ) :  items
+)
 
 const TodoList: React.FC = () => {
   const dispatch = useAppDispatch()
-  const todos = useAppSelector(state => state.todos)
+  // to avoid unnecessary re-renders multiple selectors could be used if `todos` was complex object with more properties
+  const todos = useAppSelector(selectUncompletedTodos)
+  const loading = useAppSelector(state => state.todos.loading)
+  const errorMsg = useAppSelector(state => state.todos.errorMessage)
 
   React.useEffect(() => {
     const loadTodos = async () => {
@@ -21,8 +34,9 @@ const TodoList: React.FC = () => {
 
   return (
     <div className='todoList'>
-      {todos.loading && 'Loading...'}
-      {todos.list.map((todo) => (
+      {loading && <div className='loader'>Loading...</div>}
+      {errorMsg && <div className='error'>{errorMsg}</div>}
+      {todos.map((todo) => (
         <div
           key={todo.id}
           className={cn('todo', {

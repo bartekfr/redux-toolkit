@@ -10,22 +10,27 @@ export interface Todo {
 export interface ToDosState {
   list: Todo[]
   loading?: boolean
+  filterPendingTodos?: boolean
+  errorMessage?: string
+}
+
+const initialState: ToDosState = {
+  filterPendingTodos: false,
+  loading: false,
+  list: []
 }
 
 export const fetchTodos = createAsyncThunk(
   'todos/list',
   async () => {
     const response = await fetch(`https://jsonplaceholder.typicode.com/todos`)
-    console.log('response')
     return (await response.json()) as Todo[]
   }
 )
 
 const todos = createSlice({
   name: 'todos',
-  initialState: {
-    list: []
-  } as ToDosState,
+  initialState,
   reducers: {
     addTodo: (state, action: PayloadAction<string>) => {
       state.list.push({ id: uuid(), title: action.payload, completed: false })
@@ -34,15 +39,17 @@ const todos = createSlice({
       state.list = state.list.filter((todo) => todo.id !== action.payload)
     },
     completeTodo: (state, action: PayloadAction<string>) => {
-      const completedTodo = state.list.find(
+      const itemToComplete = state.list.find(
         (todo) => todo.id === action.payload
       )
-      if (completedTodo) {
-        completedTodo.completed = !completedTodo.completed
+      if (itemToComplete) {
+        itemToComplete.completed = !itemToComplete.completed
       }
-
-      return state
-    }
+      console.log(5, itemToComplete)
+    },
+    filterPendingTodos: (state, action: PayloadAction<boolean>) => {
+      state.filterPendingTodos = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -51,6 +58,10 @@ const todos = createSlice({
       })
       .addCase(fetchTodos.fulfilled, (state, action) => {
         state.list = action.payload.slice(0, 5)
+        state.loading = false
+      })
+      .addCase(fetchTodos.rejected, (state, action) => {
+        state.errorMessage = action.error.message
         state.loading = false
       })
   }

@@ -28,6 +28,10 @@
   margin-left: auto;
 }
 
+.todoInput {
+  margin-bottom: 15px;
+}
+
 .todoInput > * + * {
   margin-left: 0.5rem;
 }
