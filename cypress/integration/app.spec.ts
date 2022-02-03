@@ -71,4 +71,22 @@ describe('App test', () => {
     cy.get('@lastItem').contains('Go for a walk')
   })
 
+  it('Handles load request erros', () => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: 'https://jsonplaceholder.typicode.com/todos'
+      }, {
+        forceNetworkError: true
+      }
+    ).as('getTodos')
+
+    cy.visit('/')
+    cy.get('.loader')
+    cy.get('.error').should('not.exist')
+    cy.wait('@getTodos')
+
+    cy.get('.loader').should('not.exist')
+    cy.get('.error')
+  })
 })
