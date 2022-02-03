@@ -68,6 +68,8 @@ describe('App test', () => {
     cy.get('.todoList .todo')
       .should('have.length', 2)
 
+    cy.contains('Shopping').should('not.exist')
+
     cy.get('@lastItem').contains('Go for a walk')
   })
 
