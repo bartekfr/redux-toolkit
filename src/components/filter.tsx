@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useAppSelector, useAppDispatch } from '../common/hooks'
-import todoSlice, { fetchTodos } from '../store/todos'
-import todos from '../store/todos'
+import todoSlice from '../store/todos'
 
 const Filter: React.FC = () => {
   const dispatch = useAppDispatch()
