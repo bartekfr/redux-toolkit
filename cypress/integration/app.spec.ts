@@ -21,6 +21,8 @@ describe('App test', () => {
       .each($el => {
         cy.wrap($el).should('not.have.class', 'completeTodo')
       })
+
+    cy.get('.remaining-count span').contains(2)
   })
 
   it('Adds todo', () => {
@@ -32,6 +34,8 @@ describe('App test', () => {
       .should('have.length', 3)
       .last()
       .contains(title)
+
+    cy.get('.remaining-count span').contains(3)
   })
 
   it('Completes todo', () => {
@@ -42,10 +46,13 @@ describe('App test', () => {
     cy.get('@newItem').find('.todoCheck').click()
     cy.get('@newItem').find('.todoCheck').should('have.prop', 'checked', true)
     cy.get('@newItem').should('have.class', 'completeTodo')
+
+    cy.get('.remaining-count span').contains(2)
   })
 
   it('Filters todo', () => {
     cy.get('.todoList .todo:first-child').as('firstItem').find('.todoCheck').click()
+    cy.get('.remaining-count span').contains(1)
     const expectedCompletedTodosCount = 2
     const expectedAllTodosCount = 3
 
@@ -83,6 +90,7 @@ describe('App test', () => {
 
     cy.get('@lastItem').contains('Go for a walk')
     cy.get('.todo').contains(lastItemTitle).should('not.exist')
+    cy.get('.remaining-count span').contains(1)
   })
 
   it('Handles load request erros', () => {
