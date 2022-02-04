@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect'
+import { createSelector } from '@reduxjs/toolkit'
 import React from 'react'
 import cn from 'classnames'
 import { useAppSelector, useAppDispatch } from '../common/hooks'
