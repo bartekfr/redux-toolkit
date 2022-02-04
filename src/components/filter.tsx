@@ -15,7 +15,7 @@ const Filter: React.FC = () => {
         id='filterCheckbox'
         type='checkbox'
         checked={filterChecked}
-        onChange={event => dispatch(todoSlice.actions.filterPendingTodos(!filterChecked))}
+        onChange={event => dispatch(todoSlice.actions.filterPendingTodos(event.target.checked))}
       />
     </div>
   )

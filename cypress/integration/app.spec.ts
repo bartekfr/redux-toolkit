@@ -24,53 +24,65 @@ describe('App test', () => {
   })
 
   it('Adds todo', () => {
-    cy.get('#todo-input').type('Shopping{enter}')
+    const title = 'Shopping'
+    cy.contains(title).should('not.exist')
+    cy.get('#todo-input').type(`${title}{enter}`)
 
     cy.get('.todoList .todo')
       .should('have.length', 3)
       .last()
-      .contains('Shopping')
+      .contains(title)
   })
 
   it('Completes todo', () => {
     cy.get('.todoList .todo:last-child').as('newItem')
       .should('not.have.class', 'completeTodo')
 
+    cy.get('@newItem').find('.todoCheck').should('have.prop', 'checked', false)
     cy.get('@newItem').find('.todoCheck').click()
+    cy.get('@newItem').find('.todoCheck').should('have.prop', 'checked', true)
     cy.get('@newItem').should('have.class', 'completeTodo')
   })
 
   it('Filters todo', () => {
     cy.get('.todoList .todo:first-child').as('firstItem').find('.todoCheck').click()
+    const expectedCompletedTodosCount = 2
+    const expectedAllTodosCount = 3
+
     cy.get('@firstItem').should('have.class', 'completeTodo')
-    cy.get('.completeTodo').should('have.length', 2)
+    cy.get('.completeTodo').should('have.length', expectedCompletedTodosCount)
 
     cy.get('.todoList .todo')
-      .should('have.length', 3)
+      .should('have.length', expectedAllTodosCount)
 
     cy.get('#filterCheckbox').click()
 
     cy.get('.todoList .todo')
-      .should('have.length', 1)
+      .should('have.length', expectedAllTodosCount - expectedCompletedTodosCount)
       .each($el => {
         cy.wrap($el).should('not.have.class', 'completeTodo')
       })
+
+    cy.get('#filterCheckbox').click()
+    cy.get('.todoList .todo')
+      .should('have.length', expectedAllTodosCount)
   })
 
   it('Deletes todo', () => {
-    cy.get('#filterCheckbox').click()
+    const lastItemTitle = 'Shopping'
     cy.get('.todoList .todo')
       .should('have.length', 3)
 
-    cy.get('.todoList .todo:last-child').as('lastItem').contains('Shopping')
+    cy.get('.todo').contains(lastItemTitle)
+
+    cy.get('.todoList .todo:last-child').as('lastItem').contains(lastItemTitle)
     cy.get('@lastItem').find('.todoDelete').click()
 
     cy.get('.todoList .todo')
       .should('have.length', 2)
 
-    cy.contains('Shopping').should('not.exist')
-
     cy.get('@lastItem').contains('Go for a walk')
+    cy.get('.todo').contains(lastItemTitle).should('not.exist')
   })
 
   it('Handles load request erros', () => {
