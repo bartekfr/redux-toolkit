@@ -83,7 +83,8 @@ describe('App test', () => {
     cy.get('.todo').contains(lastItemTitle)
 
     cy.get('.todoList .todo:last-child').as('lastItem').contains(lastItemTitle)
-    cy.get('@lastItem').find('.todoDelete').click()
+
+    cy.get('@lastItem').find('.todoDelete').click({ force: true })
 
     cy.get('.todoList .todo')
       .should('have.length', 2)

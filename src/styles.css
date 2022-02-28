@@ -25,7 +25,12 @@
 }
 
 .todoDelete {
+  visibility: hidden;
   margin-left: auto;
+}
+
+.todo:hover .todoDelete {
+  visibility: visible;
 }
 
 .todoInput {
