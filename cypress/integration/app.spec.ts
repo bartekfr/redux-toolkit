@@ -63,28 +63,35 @@ describe('App test', () => {
   })
 
   it('Deletes todos', () => {
-    cy.get('.todoList .todo').should('have.length', 3)
-    cy.get('.remaining-count span').contains(2)
-    cy.get('.todoList .todo:not(.completeTodo)').should('have.length', 2)
-    cy.get('.todoList .completeTodo').should('have.length', 1)
+    let allTodosCount = 3
+    let remainingTodosCount = 2
+    let completeTodosCount = 1
+    cy.get('.todoList .todo').as('todos').should('have.length', allTodosCount)
+    cy.get('.remaining-count span').as('remaining').contains(remainingTodosCount)
+    cy.get('.todoList .todo:not(.completeTodo)').as('uncompleted').should('have.length', remainingTodosCount)
+    cy.get('.todoList .completeTodo').as('completed').should('have.length', completeTodosCount)
 
     cy.get('.todo .todoDelete').eq(0).click({
       force: true,
     })
+    allTodosCount--
+    remainingTodosCount--
 
-    cy.get('.todoList .todo').should('have.length', 2)
-    cy.get('.remaining-count span').contains(1)
-    cy.get('.todoList .todo:not(.completeTodo)').should('have.length', 1)
-    cy.get('.todoList .completeTodo').should('have.length', 1)
+    cy.get('@todos').should('have.length', allTodosCount)
+    cy.get('@remaining').contains(remainingTodosCount)
+    cy.get('@uncompleted').should('have.length', remainingTodosCount)
+    cy.get('@completed').should('have.length', completeTodosCount)
 
     cy.get('.completeTodo .todoDelete').click({
       force: true,
     })
+    allTodosCount--
+    completeTodosCount--
 
-    cy.get('.todoList .todo').should('have.length', 1)
-    cy.get('.remaining-count span').contains(1)
-    cy.get('.todoList .todo:not(.completeTodo)').should('have.length', 1)
-    cy.get('.todoList .completeTodo').should('have.length', 0)
+    cy.get('@todos').should('have.length', allTodosCount)
+    cy.get('@remaining').contains(remainingTodosCount)
+    cy.get('@uncompleted').should('have.length', remainingTodosCount)
+    cy.get('@completed').should('have.length', completeTodosCount)
   })
 
   it('Filters todo', () => {
