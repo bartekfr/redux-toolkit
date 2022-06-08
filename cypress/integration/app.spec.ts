@@ -110,8 +110,23 @@ describe('App test', () => {
     cy.get('.todoList .todo')
       .should('have.length', expectedAllTodosCount)
 
-    cy.get('#filterCheckbox').click()
+    cy.get('#filterPendingCheckbox').click() // uncheck - shows only completed
     cy.get('.remaining-count span').contains(1)
+
+    cy.get('.todoList .todo')
+      .should('have.length', expectedCompletedTodosCount)
+      .each($el => {
+        cy.wrap($el)
+          .should('have.class', 'completeTodo')
+          .find('input:checkbox')
+          .should('be.checked')
+      })
+
+    cy.get('#filterPendingCheckbox').click() // check - shows all
+    cy.get('.todoList .todo')
+      .should('have.length', expectedAllTodosCount)
+
+    cy.get('#filterCompletedCheckbox').click() // uncheck - shows only uncompleted
 
     cy.get('.todoList .todo')
       .should('have.length', expectedAllTodosCount - expectedCompletedTodosCount)
@@ -122,7 +137,12 @@ describe('App test', () => {
           .should('not.be.checked')
       })
 
-    cy.get('#filterCheckbox').click()
+    cy.get('#filterPendingCheckbox').click() // uncheck - shows nothing
+    cy.get('.todoList .todo').should('not.exist')
+
+    cy.get('#filterPendingCheckbox').click()
+    cy.get('#filterCompletedCheckbox').click()
+
     cy.get('.todoList .todo')
       .should('have.length', expectedAllTodosCount)
   })
@@ -145,10 +165,17 @@ describe('App test', () => {
     cy.get('.todoList .todo:not(.completeTodo)').should('have.length', 3)
     cy.get('.todoList .completeTodo').should('have.length', 2)
 
+
+    cy.get('#filterPendingCheckbox').click()
     cy.get('.completeTodo .todoDelete').click({
       force: true,
       multiple: true
     })
+
+    cy.get('.todoList .todo')
+      .should('not.exist')
+
+    cy.get('#filterPendingCheckbox').click()
 
     cy.get('.todoList .todo')
       .should('have.length', 3)
@@ -159,7 +186,7 @@ describe('App test', () => {
           .should('not.be.checked')
       })
 
-    cy.get('#filterCheckbox').click()
+    cy.get('#filterCompletedCheckbox').click()
 
     cy.get('.remaining-count span').contains(3)
     cy.get('.todo').should('have.length', 3)

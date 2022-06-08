@@ -4,19 +4,32 @@ import todoSlice from '../store/todos'
 
 const Filter: React.FC = () => {
   const dispatch = useAppDispatch()
-  const filterChecked = useAppSelector(state => state.todos.filterPendingTodos)
+  const pendingFilterChecked = useAppSelector(state => state.todos.filterPendingTodos)
+  const completedFilterChecked = useAppSelector(state => state.todos.filterCompletedTodos)
 
   return (
     <div
       className='filter'
     >
-      <label htmlFor='filterCheckbox'>Show only uncompleted items</label>
-      <input
-        id='filterCheckbox'
-        type='checkbox'
-        checked={filterChecked}
-        onChange={event => dispatch(todoSlice.actions.filterPendingTodos(event.target.checked))}
-      />
+      <div>
+        <label htmlFor='filterPendingCheckbox'>Show uncompleted items</label>
+        <input
+          id='filterPendingCheckbox'
+          type='checkbox'
+          checked={pendingFilterChecked}
+          onChange={event => dispatch(todoSlice.actions.filterPendingTodos(event.target.checked))}
+        />
+      </div>
+      <div>
+        <label htmlFor='filterCompletedCheckbox'>Show completed items</label>
+        <input
+          id='filterCompletedCheckbox'
+          type='checkbox'
+          checked={completedFilterChecked}
+          onChange={event => dispatch(todoSlice.actions.filterCompletedTodos(event.target.checked))}
+        />
+      </div>
+
     </div>
   )
 }

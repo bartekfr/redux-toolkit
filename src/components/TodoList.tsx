@@ -8,10 +8,20 @@ import type { AppState } from '../store/store'
 
 const selectTodos = (state: AppState) => state.todos.list
 const selectPendingFilter = (state: AppState) => state.todos.filterPendingTodos
+const selectCompletedTodos = (state: AppState) => state.todos.filterCompletedTodos
 
-const selectFilteredTodos = createSelector(selectTodos, selectPendingFilter, (items, filter) =>
-  filter ? items.filter(item => item.completed === false) :  items
-)
+const selectFilteredTodos = createSelector(selectTodos, selectPendingFilter, selectCompletedTodos, (items, pendingFilter, completedFilter) => {
+  if (pendingFilter && !completedFilter) {
+    return items.filter(item => item.completed === false)
+  } else if (completedFilter && !pendingFilter) {
+    return items.filter(item => item.completed === true)
+  } else if (!pendingFilter && ! completedFilter) {
+    return []
+  } else {
+    return items
+  }
+
+})
 
 const uncompletedTodosLength = createSelector(selectTodos, (items) => items.filter(item => item.completed === false).length)
 

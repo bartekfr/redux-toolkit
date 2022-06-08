@@ -11,11 +11,13 @@ export interface ToDosState {
   list: Todo[]
   loading?: boolean
   filterPendingTodos?: boolean
+  filterCompletedTodos?: boolean
   errorMessage?: string
 }
 
 const initialState: ToDosState = {
-  filterPendingTodos: false,
+  filterCompletedTodos: true,
+  filterPendingTodos: true,
   loading: false,
   list: []
 }
@@ -46,6 +48,9 @@ const todos = createSlice({
         itemToComplete.completed = !itemToComplete.completed
       }
       console.log(5, itemToComplete)
+    },
+    filterCompletedTodos: (state, action: PayloadAction<boolean>) => {
+      state.filterCompletedTodos = action.payload
     },
     filterPendingTodos: (state, action: PayloadAction<boolean>) => {
       state.filterPendingTodos = action.payload
