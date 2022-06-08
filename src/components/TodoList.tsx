@@ -11,14 +11,14 @@ const selectPendingFilter = (state: AppState) => state.todos.filterPendingTodos
 const selectCompletedTodos = (state: AppState) => state.todos.filterCompletedTodos
 
 const selectFilteredTodos = createSelector(selectTodos, selectPendingFilter, selectCompletedTodos, (items, pendingFilter, completedFilter) => {
-  if (pendingFilter && !completedFilter) {
-    return items.filter(item => item.completed === false)
-  } else if (completedFilter && !pendingFilter) {
-    return items.filter(item => item.completed === true)
-  } else if (!pendingFilter && ! completedFilter) {
-    return []
-  } else {
+  if (pendingFilter && completedFilter) {
     return items
+  } else if (pendingFilter) {
+    return items.filter(item => item.completed === false)
+  } else if (completedFilter) {
+    return items.filter(item => item.completed === true)
+  } else {
+    return []
   }
 
 })
