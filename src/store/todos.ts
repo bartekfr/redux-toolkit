@@ -22,11 +22,26 @@ const initialState: ToDosState = {
   list: []
 }
 
-export const fetchTodos = createAsyncThunk(
+export const fetchTodos = createAsyncThunk<
+  Todo[],
+  undefined,
+  {
+    rejectValue: string
+  }
+>(
   'todos/list',
-  async () => {
-    const response = await fetch(`https://jsonplaceholder.typicode.com/todos`)
-    return (await response.json()) as Todo[]
+  async (_, thunkApi) => {
+    try {
+      const response = await fetch(`https://jsonplaceholder.typicode.com/todos`)
+      if (response.status !== 200) {
+        return thunkApi.rejectWithValue(`Something went wrong ${response.status}`)
+      }
+
+      return (await response.json())
+    } catch (e) {
+      return thunkApi.rejectWithValue('Request failed.')
+    }
+
   }
 )
 
@@ -63,11 +78,11 @@ const todos = createSlice({
       })
       .addCase(fetchTodos.fulfilled, (state, action) => {
         state.list = action.payload.slice(0, 5)
-        state.status = 'loading'
+        state.status = 'completed'
       })
       .addCase(fetchTodos.rejected, (state, action) => {
-        state.errorMessage = action.error.message
-        console.log('error')
+        state.errorMessage = action.payload
+        console.log(action)
         state.status = 'completed'
       })
   }

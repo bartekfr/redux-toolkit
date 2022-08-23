@@ -203,7 +203,7 @@ describe('App test', () => {
     cy.get('.remaining-count span').contains(0)
   })
 
-  it('Handles load request erros', () => {
+  it('Handles failed requestt error', () => {
     cy.intercept(
       {
         method: 'GET',
@@ -219,6 +219,26 @@ describe('App test', () => {
     cy.wait('@getTodos')
 
     cy.get('.loader').should('not.exist')
-    cy.get('.error')
+    cy.get('.error').contains('Request failed')
+  })
+
+  it('Handles 4XX request errors', () => {
+    const statusCode = 401
+    cy.intercept(
+      {
+        method: 'GET',
+        url: 'https://jsonplaceholder.typicode.com/todos'
+      }, {
+        statusCode
+      }
+    ).as('getTodos')
+
+    cy.visit('/')
+    cy.get('.loader')
+    cy.get('.error').should('not.exist')
+    cy.wait('@getTodos')
+
+    cy.get('.loader').should('not.exist')
+    cy.get('.error').contains(`Something went wrong ${statusCode}`)
   })
 })
