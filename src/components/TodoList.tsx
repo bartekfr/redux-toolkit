@@ -37,6 +37,8 @@ const TodoList: React.FC = () => {
   React.useEffect(() => {
     const loadTodos = async () => {
       const loadResult = await dispatch(fetchTodos())
+      console.log('Fetch dispatch result:', loadResult)
+
       if (fetchTodos.fulfilled.match(loadResult)) {
         const list = loadResult.payload
         console.log(`Loaded result ${list}`)
