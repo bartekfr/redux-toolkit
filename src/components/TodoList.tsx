@@ -30,8 +30,9 @@ const TodoList: React.FC = () => {
   // to avoid unnecessary re-renders multiple selectors could be used if `todos` was complex object with more properties
   const todos = useAppSelector(selectFilteredTodos)
   const remainingTodos = useAppSelector(uncompletedTodosLength)
-  const loading = useAppSelector(state => state.todos.loading)
+  const status = useAppSelector(state => state.todos.status)
   const errorMsg = useAppSelector(state => state.todos.errorMessage)
+  const loading = status === 'loading'
 
   React.useEffect(() => {
     const loadTodos = async () => {
