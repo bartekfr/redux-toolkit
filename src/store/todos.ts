@@ -9,7 +9,7 @@ export interface Todo {
 
 export interface ToDosState {
   list: Todo[]
-  status?: 'loading' | 'completed'
+  status?: 'loading' | 'completed' | 'error'
   filterPendingTodos?: boolean
   filterCompletedTodos?: boolean
   errorMessage?: string
@@ -79,11 +79,12 @@ const todos = createSlice({
       .addCase(fetchTodos.fulfilled, (state, action) => {
         state.list = action.payload.slice(0, 5)
         state.status = 'completed'
+        return state
       })
       .addCase(fetchTodos.rejected, (state, action) => {
         state.errorMessage = action.payload
         console.log(action)
-        state.status = 'completed'
+        state.status = 'error'
       })
   }
 })
