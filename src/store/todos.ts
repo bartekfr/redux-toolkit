@@ -62,7 +62,6 @@ const todos = createSlice({
       if (itemToComplete) {
         itemToComplete.completed = !itemToComplete.completed
       }
-      console.log(5, itemToComplete)
     },
     filterCompletedTodos: (state, action: PayloadAction<boolean>) => {
       state.filterCompletedTodos = action.payload
